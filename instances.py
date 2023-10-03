@@ -1,6 +1,6 @@
 # Here we create 4 M4.large instances for cluster 1. 
 
-def create_m4large_cluster(client, keyPair, securityGroup):
+def create_m4large_instances(client, keyPair, securityGroup):
     print('Creating 4 instances of m4.large...')
     lowercase_a = 97
     ids = []
@@ -50,7 +50,7 @@ def create_m4large_cluster(client, keyPair, securityGroup):
     # For creating a new instance we use "run_instances" function. There are some parameters we can fix there.
     # This example sets the EBS-backed root device (/dev/sda1) size to 8 GiB.
   
-def create_t2large_cluster(client, keyPair, securityGroup):
+def create_t2large_instances(client, keyPair, securityGroup):
     print('Creating 5 instances of t2.large...')
     lowercase_a = 97
     ids = []
