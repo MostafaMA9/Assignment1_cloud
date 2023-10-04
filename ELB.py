@@ -2,17 +2,17 @@
 import boto3
 from botocore.exceptions import ClientError
 
-def create_target_group(ec2, name, protocol, port, vpc_id):
+def create_target_group(elvb2, name, protocol, port, vpc_id):
     try:
-        response = ec2.create_target_group(Name=name, Protocol=protocol, Port=port, VpcId=vpc_id)
+        response = elvb2.create_target_group(Name=name, Protocol=protocol, Port=port, VpcId=vpc_id)
         return response
     except ClientError as e:    
         print(e)
 
 
-def create_load_balancer(ec2, name, security_group_id, subnets):
+def create_load_balancer(elvb2, name, security_group_id, subnets):
     try:
-        response = ec2.create_load_balancer(
+        response = elvb2.create_load_balancer(
             Name=name, 
             SecurityGroups=[security_group_id], 
             Subnets=subnets, 
@@ -24,9 +24,9 @@ def create_load_balancer(ec2, name, security_group_id, subnets):
     except ClientError as e:    
         print(e)
 
-def create_listener(ec2, load_balancer_arn, protocol, port, target_group_arn):
+def create_listener(elvb2, load_balancer_arn, protocol, port, target_group_arn):
     try:
-        response = ec2.create_listener(
+        response = elvb2.create_listener(
             LoadBalancerArn=load_balancer_arn, 
             Protocol=protocol, 
             Port=port, 
@@ -35,9 +35,9 @@ def create_listener(ec2, load_balancer_arn, protocol, port, target_group_arn):
     except ClientError as e:    
         print(e)
 
-def create_rule(ec2, listener_arn, field, values, priority, target_group_arn):
+def create_rule(elvb2, listener_arn, field, values, priority, target_group_arn):
     try:
-        response = ec2.create_rule(
+        response = elvb2.create_rule(
             ListenerArn=listener_arn,
             Conditions=[
                 {
@@ -59,30 +59,30 @@ def create_rule(ec2, listener_arn, field, values, priority, target_group_arn):
     except ClientError as e:
         print(e)
 
-def delete_target_group(ec2, target_group_arn):
+def delete_target_group(elvb2, target_group_arn):
     try:
-        response = ec2.delete_target_group(TargetGroupArn=target_group_arn)
+        response = elvb2.delete_target_group(TargetGroupArn=target_group_arn)
         return response
     except ClientError as e:
         print(e)
 
-def delete_load_balancer(ec2, load_balancer_arn):
+def delete_load_balancer(elvb2, load_balancer_arn):
     try:
-        response = ec2.delete_load_balancer(LoadBalancerArn=load_balancer_arn)
+        response = elvb2.delete_load_balancer(LoadBalancerArn=load_balancer_arn)
         return response
     except ClientError as e:
         print(e)
 
-def delete_listener(ec2, listener_arn):
+def delete_listener(elvb2, listener_arn):
     try:
-        response = ec2.delete_listener(ListenerArn=listener_arn)
+        response = elvb2.delete_listener(ListenerArn=listener_arn)
         return response
     except ClientError as e:
         print(e)
 
-def delete_rule(ec2, rule_arn):
+def delete_rule(elvb2, rule_arn):
     try:
-        response = ec2.delete_rule(RuleArn=rule_arn)
+        response = elvb2.delete_rule(RuleArn=rule_arn)
         return response
     except ClientError as e:
         print(e)
