@@ -3,19 +3,17 @@
 import boto3
 from botocore.exceptions import ClientError
 
-def create_target_group(name, protocol, port, vpc_id):
-    ec2 = boto3.client('ec2')
+def create_target_group(client, name, protocol, port, vpc_id):
     try:
-        response = ec2.create_target_group(Name=name, Protocol=protocol, Port=port, VpcId=vpc_id)
+        response = client.create_target_group(Name=name, Protocol=protocol, Port=port, VpcId=vpc_id)
         return response
     except ClientError as e:    
         print(e)
 
 
-def create_load_balancer(name, security_group_id, subnets, target_group_arns):
-    ec2 = boto3.client('ec2')
+def create_load_balancer(client, name, security_group_id, subnets, target_group_arns):
     try:
-        response = ec2.create_load_balancer(
+        response = client.create_load_balancer(
             Name=name, 
             SecurityGroups=[security_group_id], 
             Subnets=subnets, 
@@ -28,10 +26,9 @@ def create_load_balancer(name, security_group_id, subnets, target_group_arns):
     except ClientError as e:    
         print(e)
 
-def create_listener(load_balancer_arn, protocol, port, target_group_arn):
-    ec2 = boto3.client('ec2')
+def create_listener(client, load_balancer_arn, protocol, port, target_group_arn):
     try:
-        response = ec2.create_listener(
+        response = client.create_listener(
             LoadBalancerArn=load_balancer_arn, 
             Protocol=protocol, 
             Port=port, 
@@ -40,10 +37,9 @@ def create_listener(load_balancer_arn, protocol, port, target_group_arn):
     except ClientError as e:    
         print(e)
 
-def create_rule(listener_arn, field, values, priority, target_group_arn):
-    ec2 = boto3.client('ec2')
+def create_rule(client, listener_arn, field, values, priority, target_group_arn):
     try:
-        response = ec2.create_rule(
+        response = client.create_rule(
             ListenerArn=listener_arn,
             Conditions=[
                 {
