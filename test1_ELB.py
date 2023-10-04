@@ -62,15 +62,17 @@ if __name__ == '__main__':
     # hello_elbv2(elb_client)
     client = boto3.client('elb', region_name="us-east-1")
     my_LB = create_load_balancer_method(client)
-    for lb in client.describe_load_balancers()['LoadBalancerDescriptions']:
-        print (lb['LoadBalancerName'])
     
-    response = client.describe_load_balancers(
-    LoadBalancerNames=[
-        'my-load-balancer1',
-    ],
-    )
-    print(response)
+    
+    # for lb in client.describe_load_balancers()['LoadBalancerDescriptions']:
+    #     print (lb['LoadBalancerName'])
+    
+    # response = client.describe_load_balancers(
+    # LoadBalancerNames=[
+    #     'my-load-balancer1',
+    # ],
+    # )
+    # print(response)
 
 
 # ec2 = boto3.client('ec2', region_name="us-east-1" )
