@@ -58,3 +58,31 @@ def create_rule(ec2, listener_arn, field, values, priority, target_group_arn):
         return response
     except ClientError as e:
         print(e)
+
+def delete_target_group(ec2, target_group_arn):
+    try:
+        response = ec2.delete_target_group(TargetGroupArn=target_group_arn)
+        return response
+    except ClientError as e:
+        print(e)
+
+def delete_load_balancer(ec2, load_balancer_arn):
+    try:
+        response = ec2.delete_load_balancer(LoadBalancerArn=load_balancer_arn)
+        return response
+    except ClientError as e:
+        print(e)
+
+def delete_listener(ec2, listener_arn):
+    try:
+        response = ec2.delete_listener(ListenerArn=listener_arn)
+        return response
+    except ClientError as e:
+        print(e)
+
+def delete_rule(ec2, rule_arn):
+    try:
+        response = ec2.delete_rule(RuleArn=rule_arn)
+        return response
+    except ClientError as e:
+        print(e)
