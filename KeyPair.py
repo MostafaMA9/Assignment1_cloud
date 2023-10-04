@@ -1,10 +1,9 @@
 import boto3
 from botocore.exceptions import ClientError
 
-def create_key_pair(key_name):
-    ec2 = boto3.client('ec2')
+def create_key_pair(ec2, key_name):
     try:
         response = ec2.create_key_pair(KeyName=key_name)
-        print(response)
+        return response
     except ClientError as e:
         print(e)

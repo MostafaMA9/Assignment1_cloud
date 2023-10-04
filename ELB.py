@@ -2,17 +2,15 @@
 import boto3
 from botocore.exceptions import ClientError
 
-def create_target_group(name, protocol, port, vpc_id):
-    ec2 = boto3.client('ec2')
+def create_target_group(ec2, name, protocol, port, vpc_id):
     try:
         response = ec2.create_target_group(Name=name, Protocol=protocol, Port=port, VpcId=vpc_id)
-        print(response)
+        return response
     except ClientError as e:    
         print(e)
 
 
-def create_load_balancer(name, security_group_id, subnets, target_group_arns):
-    ec2 = boto3.client('ec2')
+def create_load_balancer(ec2, name, security_group_id, subnets):
     try:
         response = ec2.create_load_balancer(
             Name=name, 
@@ -21,26 +19,23 @@ def create_load_balancer(name, security_group_id, subnets, target_group_arns):
             Scheme='internet-facing', 
             Type='application', 
             IpAddressType='ipv4', 
-            Tags=[{'Key': 'Name', 'Value': name}], 
-            TargetGroupArn=target_group_arns)
-        print(response)
+            Tags=[{'Key': 'Name', 'Value': name}], )
+        return response
     except ClientError as e:    
         print(e)
 
-def create_listener(load_balancer_arn, protocol, port, target_group_arn):
-    ec2 = boto3.client('ec2')
+def create_listener(ec2, load_balancer_arn, protocol, port, target_group_arn):
     try:
         response = ec2.create_listener(
             LoadBalancerArn=load_balancer_arn, 
             Protocol=protocol, 
             Port=port, 
             DefaultActions=[{'Type': 'forward', 'TargetGroupArn': target_group_arn}])
-        print(response)
+        return response
     except ClientError as e:    
         print(e)
 
-def create_rule(listener_arn, field, values, priority, target_group_arn):
-    ec2 = boto3.client('ec2')
+def create_rule(ec2, listener_arn, field, values, priority, target_group_arn):
     try:
         response = ec2.create_rule(
             ListenerArn=listener_arn,
@@ -60,6 +55,6 @@ def create_rule(listener_arn, field, values, priority, target_group_arn):
                 },
             ]
         )
-        print(response)
+        return response
     except ClientError as e:
         print(e)

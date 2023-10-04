@@ -12,25 +12,6 @@ def create_instances(image_id, instance_type, number, subnet_id, security_group_
             SubnetId=subnet_id,
             SecurityGroupIds=[security_group_id], 
             KeyName=key_name)
-        print(response)
-    except ClientError as e:
-        print(e)
-
-def create_vpc(id, cidr_block):
-    ec2 = boto3.client('ec2')
-    try:
-        response = ec2.create_vpc(Id=id,CidrBlock=cidr_block)
-        print(response)
-    except ClientError as e:
-        print(e)
-
-def create_subnet(id, cidr_block, vpc_id):
-    ec2 = boto3.client('ec2')
-    try:
-        response = ec2.create_subnet(
-            Id=id,
-            CidrBlock=cidr_block,
-            VpcId=vpc_id)
-        print(response)
+        return response
     except ClientError as e:
         print(e)
