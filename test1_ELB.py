@@ -48,7 +48,7 @@ def create_load_balancer_method(client):
             'Protocol': 'HTTP',
         },
     ],
-    LoadBalancerName='my-load-balancer2',
+    LoadBalancerName='my-load-balancer1',
     )
 
     print(response)
@@ -60,7 +60,7 @@ def create_load_balancer_method(client):
 if __name__ == '__main__':
     # elb_client = boto3.client('elbv2', region_name="us-east-1")
     # hello_elbv2(elb_client)
-    client = boto3.client('elbv2', region_name="us-east-1")
+    client = boto3.client('elb', region_name="us-east-1")
     my_LB = create_load_balancer_method(client)
     for lb in client.describe_load_balancers()['LoadBalancerDescriptions']:
         print (lb['LoadBalancerName'])
