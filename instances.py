@@ -46,16 +46,14 @@ def create_m4large_instances(client, keyPair, securityGroup):
     return ids
 
 
-    # Here we create 5 t2.large instances for cluster 2. 
-    # For creating a new instance we use "run_instances" function. There are some parameters we can fix there.
-    # This example sets the EBS-backed root device (/dev/sda1) size to 8 GiB.
-  
+ # Here we create 5 t2.large instances for cluster 2. 
+ 
 def create_t2large_instances(client, keyPair, securityGroup):
     print('Creating 5 instances of t2.large...')
     lowercase_a = 97
     ids = []
 
-    for instance in range(4):
+    for instance in range(5):
         response = client.run_instances(
             BlockDeviceMappings=[
                 {
@@ -96,8 +94,8 @@ def create_t2large_instances(client, keyPair, securityGroup):
     return ids
     
 
-# This function is defined to terminate the instances by function "terminate_instances".
-def terminate_instance_cluster(client, instanceIds):
+# This function terminates the running instances ".
+def terminate_instance(client, instanceIds):
     print('terminating cluster of instances:')
     print(instanceIds)
     client.terminate_instances(InstanceIds=(instanceIds))
