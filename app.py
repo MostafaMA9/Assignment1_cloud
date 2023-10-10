@@ -3,12 +3,16 @@ subprocess.check_call(['pip', 'install', '-r', 'requirements.txt'])
 import boto3
 import os
 from dotenv import load_dotenv
+import requests
+import threading
+from datetime import datetime
 import time
 from instances import *
 from KeyPair import *
 from SecurityGroup import *
 from ELB import *
-
+from benchmark import *
+from analysis import *
 
 load_dotenv("./credentials")
 aws_access_key_id = os.environ["aws_access_key_id"]
@@ -17,7 +21,7 @@ aws_session_token = os.environ["aws_session_token"]
 
 # Define EC2 instance parameters
 keyPairName = 'LOG8415E'
-securityGroupName = 'LOG8415E_LAB_B1'
+securityGroupName = 'LOG8415E_B2'
 
 
 # Create an EC2 client
@@ -39,6 +43,15 @@ ELBV2 = boto3.client(
     aws_session_token=aws_session_token
 )
 
+#Cloudwatch client
+CW = boto3.client(
+    'cloudwatch',
+    region_name="us-east-1",
+    aws_access_key_id=aws_access_key_id,
+    aws_secret_access_key=aws_secret_access_key,
+    aws_session_token=aws_session_token
+)
+
 #get vpc_id
 vpc_id = EC2.describe_vpcs().get('Vpcs', [{}])[0].get('VpcId', '')
 subnet1 = EC2.describe_subnets().get('Subnets', [{}])[0].get('SubnetId', '')
@@ -50,18 +63,25 @@ create_key_pair(EC2, keyPairName)
 print('Creating security group...')
 security_group = create_security_group(EC2, securityGroupName, vpc_id)
 
-#Create 5 m4.large instances
+#Create 4 m4.large instances
 m4Large_cluster_ids = create_m4large_instances(EC2, keyPairName, securityGroupName)
+print('Cluster 1 ids: ')
+print(m4Large_cluster_ids)
 
 #Create 4 t2.large instances
 t2Large_cluster_ids = create_t2large_instances(EC2, keyPairName, securityGroupName)
+print('Cluster 2 ids: ')
+print(t2Large_cluster_ids)
+
 
 # Wait for instances to initialise
-print("Waiting 1 minute for instances to initialise")
+print("Waiting 2 minutes for instances to initialise")
 time.sleep(120)
 
 print('Creating load balancer...')
 load_balancer = create_load_balancer(ELBV2,'load-balancer', security_group['GroupId'], [subnet1,subnet2])
+elb_dns = str(load_balancer.get('LoadBalancers')[0].get('DNSName'))
+print("ELB was created. DNS: " + elb_dns)
 
 print('Creating target groups...')
 target_group1 = create_target_group(ELBV2,'target-group1', 'HTTP', 80, vpc_id)
@@ -78,8 +98,18 @@ rule2 = create_rule(ELBV2,listener['Listeners'][0]['ListenerArn'], 'path-pattern
 register_instances_to_target_groups(ELBV2, m4Large_cluster_ids, t2Large_cluster_ids, target_group1, target_group2)
 
 print("Waiting 2 minutes for ELB to get activated")
-time.sleep(120)
+time.sleep(60)
 print('Done')
+
+#Benchmark
+benchmark(elb_dns)
+
+print("Waiting 1 minute before running the analysis...")
+time.sleep(60)
+
+#cloudwatch metrics analysis
+print("Running analysis...")
+analysis(CW, m4Large_cluster_ids, t2Large_cluster_ids, target_group1, target_group2)
 
 print("Deleting the load balancer (in the same time deleting the listener and rules)...")
 time.sleep(30)
@@ -114,7 +144,7 @@ print("Waiting 2 minutes to make sure all instances are terminated ")
 time.sleep(120)
 
 print('Deleting security group...')
-delete_security_group(EC2, security_group)
+delete_security_group(EC2, securityGroupName)
 time.sleep(10)
 
 print('Deleting key pair...')

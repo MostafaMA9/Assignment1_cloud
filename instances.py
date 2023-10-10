@@ -7,16 +7,7 @@ def create_m4large_instances(client, keyPair, securityGroup):
     
     for instance in range(4):
         response = client.run_instances(
-            BlockDeviceMappings=[
-                {
-                    'DeviceName': '/dev/sda1',
-                    'Ebs': {
-                        'DeleteOnTermination': True,
-                        'VolumeSize': 8,
-                        'VolumeType': 'gp2',
-                    },
-                },
-            ],
+
             ImageId='ami-08c40ec9ead489470',
             InstanceType='m4.large',
             KeyName=keyPair,
@@ -55,16 +46,7 @@ def create_t2large_instances(client, keyPair, securityGroup):
 
     for instance in range(5):
         response = client.run_instances(
-            BlockDeviceMappings=[
-                {
-                    'DeviceName': '/dev/sda1',
-                    'Ebs': {
-                        'DeleteOnTermination': True,
-                        'VolumeSize': 8,
-                        'VolumeType': 'gp2',
-                    },
-                },
-            ],
+
             ImageId='ami-08c40ec9ead489470',
             InstanceType='t2.large',
             KeyName=keyPair,
