@@ -76,8 +76,8 @@ print('Cluster 2 ids: ')
 print(t2Large_cluster_ids)
 
 # Wait for instances to initialise
-print("Waiting 2 minutes for instances to initialise")
-time.sleep(120)
+print("Waiting 4 minute for instances to initialise")
+time.sleep(240)
 
 print('Creating load balancer...')
 load_balancer = create_load_balancer(ELBV2, 'load-balancer', security_group['GroupId'], [subnet1, subnet2])
@@ -102,7 +102,7 @@ rule2 = create_rule(ELBV2, listener['Listeners'][0]['ListenerArn'], 'path-patter
 register_instances_to_target_groups(ELBV2, m4Large_cluster_ids, t2Large_cluster_ids, target_group1, target_group2)
 
 print("Waiting 2 minutes for ELB to get activated")
-time.sleep(60)
+time.sleep(120)
 print('Done')
 
 # Benchmark
@@ -144,8 +144,8 @@ print("Terminating instances...")
 terminate_instance(EC2, m4Large_cluster_ids)
 terminate_instance(EC2, t2Large_cluster_ids)
 
-print("Waiting 2 minutes to make sure all instances are terminated ")
-time.sleep(120)
+print("Waiting 1 minute to make sure all instances are terminated ")
+time.sleep(60)
 
 print('Deleting security group...')
 delete_security_group(EC2, securityGroupName)
