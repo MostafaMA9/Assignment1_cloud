@@ -99,11 +99,12 @@ rule2 = create_rule(ELBV2, listener['Listeners'][0]['ListenerArn'], 'path-patter
 
 # Register 5 m4.large instances to target group 1 and 4 t2.large instances to target group 2
 register_instances_to_target_groups(ELBV2, m4Large_cluster_ids, t2Large_cluster_ids, target_group1, target_group2)
-print("Waiting 3 minutes for target groups to be healthy")
-time.sleep(180)
 
 print("Waiting 2 minutes for ELB to get activated")
 time.sleep(120)
+
+print("Waiting 1 minutes for target groups to be healthy")
+time.sleep(60)
 print('Done')
 
 # Benchmark
