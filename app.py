@@ -66,12 +66,12 @@ print('Creating security group...')
 security_group = create_security_group(EC2, securityGroupName, vpc_id)
 
 # Create 4 m4.large instances
-m4Large_cluster_ids = create_m4large_instances(EC2, keyPairName, securityGroupName)
+m4Large_cluster_ids = create_m4large_instances(EC2, keyPairName, security_group['GroupId'], subnet1)
 print('Cluster 1 ids: ')
 print(m4Large_cluster_ids)
 
 # Create 4 t2.large instances
-t2Large_cluster_ids = create_t2large_instances(EC2, keyPairName, securityGroupName)
+t2Large_cluster_ids = create_t2large_instances(EC2, keyPairName, security_group['GroupId'], subnet2)
 print('Cluster 2 ids: ')
 print(t2Large_cluster_ids)
 
@@ -89,8 +89,7 @@ target_group1 = create_target_group(ELBV2, 'target-group1', 'HTTP', 80, vpc_id)
 target_group2 = create_target_group(ELBV2, 'target-group2', 'HTTP', 80, vpc_id)
 
 print('Creating listener...')
-listener = create_listener(ELBV2, load_balancer['LoadBalancers'][0]['LoadBalancerArn'], 'HTTP', 80,
-                           target_group1['TargetGroups'][0]['TargetGroupArn'])
+listener = create_listener(ELBV2, load_balancer['LoadBalancers'][0]['LoadBalancerArn'], 'HTTP', 80, target_group1['TargetGroups'][0]['TargetGroupArn'], target_group2['TargetGroups'][0]['TargetGroupArn'])
 
 print('Creating rules...')
 rule1 = create_rule(ELBV2, listener['Listeners'][0]['ListenerArn'], 'path-pattern', '/cluster1', 1,
@@ -100,6 +99,8 @@ rule2 = create_rule(ELBV2, listener['Listeners'][0]['ListenerArn'], 'path-patter
 
 # Register 5 m4.large instances to target group 1 and 4 t2.large instances to target group 2
 register_instances_to_target_groups(ELBV2, m4Large_cluster_ids, t2Large_cluster_ids, target_group1, target_group2)
+print("Waiting 3 minutes for target groups to be healthy")
+time.sleep(180)
 
 print("Waiting 2 minutes for ELB to get activated")
 time.sleep(120)

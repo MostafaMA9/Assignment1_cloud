@@ -1,6 +1,6 @@
 # Here we create 4 M4.large instances for cluster 1. 
 
-def create_m4large_instances(client, keyPair, securityGroup):
+def create_m4large_instances(client, keyPair, securityGroupId, subnetId):
     print('Creating 4 instances of m4.large...')
     lowercase_a = 97
     ids = []
@@ -12,14 +12,15 @@ def create_m4large_instances(client, keyPair, securityGroup):
             InstanceType='m4.large',
             KeyName=keyPair,
             UserData=open('setup.sh').read(),
-            Placement={
-                'AvailabilityZone': 'us-east-1'+chr(lowercase_a + instance),
-            },
-            SecurityGroups=[
-                securityGroup,
+            SubnetId=subnetId,
+            SecurityGroupIds=[
+                securityGroupId,
             ],
             MaxCount=1,
             MinCount=1,
+            Monitoring={   
+                'Enabled': True
+            },
             TagSpecifications=[
                 {
                     'ResourceType': 'instance',
@@ -39,7 +40,7 @@ def create_m4large_instances(client, keyPair, securityGroup):
 
  # Here we create 5 t2.large instances for cluster 2. 
  
-def create_t2large_instances(client, keyPair, securityGroup):
+def create_t2large_instances(client, keyPair, securityGroupId, subnetId):
     print('Creating 5 instances of t2.large...')
     lowercase_a = 97
     ids = []
@@ -51,14 +52,15 @@ def create_t2large_instances(client, keyPair, securityGroup):
             InstanceType='t2.large',
             KeyName=keyPair,
             UserData=open('setup.sh').read(),
-            Placement={
-                'AvailabilityZone': 'us-east-1'+chr(lowercase_a + instance),
-            },
-            SecurityGroups=[
-                securityGroup,
+            SubnetId=subnetId,
+            SecurityGroupIds=[
+                securityGroupId,
             ],
             MaxCount=1,
             MinCount=1,
+            Monitoring={
+                'Enabled': True
+            },
             TagSpecifications=[
                 {
                     'ResourceType': 'instance',
