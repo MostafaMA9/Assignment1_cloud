@@ -6,4 +6,4 @@ We also performed a performance analysis using AWS cloudwatch metrics.
 
 # How to run
 
-TO run this code, first you need to go configure your AWS account credentials in the "credentials" file. then simply run "main.py" in the respository of Assignment1.
+TO run this code, first you need to go configure your AWS account credentials in the "credentials" file. then simply run "app.py" in the respository of Assignment1.
